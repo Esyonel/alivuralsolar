@@ -254,6 +254,14 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 15px;
   box-shadow: var(--admin-shadow);
+  transition: var(--admin-transition);
+  text-decoration: none;
+  color: inherit;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--admin-shadow-lg);
 }
 
 .stat-card-icon {

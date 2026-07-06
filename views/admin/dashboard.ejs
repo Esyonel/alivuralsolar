@@ -31,48 +31,48 @@
       <h1>Dashboard</h1>
 
       <div class="stats-cards">
-        <div class="stat-card">
+        <a href="/admin/products" class="stat-card" style="cursor:pointer;">
           <div class="stat-card-icon" style="background: #FF6B00;"><i class="fas fa-box"></i></div>
           <div class="stat-card-info">
             <h3><%= stats.products %></h3>
             <p>Toplam Ürün</p>
           </div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a href="/admin/categories" class="stat-card" style="cursor:pointer;">
           <div class="stat-card-icon" style="background: #4FC3F7;"><i class="fas fa-tags"></i></div>
           <div class="stat-card-info">
             <h3><%= stats.categories %></h3>
             <p>Kategori</p>
           </div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a href="/admin/services" class="stat-card" style="cursor:pointer;">
           <div class="stat-card-icon" style="background: #4CAF50;"><i class="fas fa-cogs"></i></div>
           <div class="stat-card-info">
             <h3><%= stats.services %></h3>
             <p>Hizmet</p>
           </div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a href="/admin/gallery" class="stat-card" style="cursor:pointer;">
           <div class="stat-card-icon" style="background: #9C27B0;"><i class="fas fa-images"></i></div>
           <div class="stat-card-info">
             <h3><%= stats.gallery %></h3>
             <p>Galeri</p>
           </div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a href="/admin/inquiries" class="stat-card" style="cursor:pointer;">
           <div class="stat-card-icon" style="background: #f44336;"><i class="fas fa-envelope"></i></div>
           <div class="stat-card-info">
             <h3><%= stats.inquiries %></h3>
             <p>Toplam Talep</p>
           </div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a href="/admin/inquiries?status=new" class="stat-card" style="cursor:pointer;">
           <div class="stat-card-icon" style="background: #FF9800;"><i class="fas fa-envelope-open"></i></div>
           <div class="stat-card-info">
             <h3><%= stats.newInquiries %></h3>
             <p>Yeni Talep</p>
           </div>
-        </div>
+        </a>
       </div>
 
       <div class="admin-section">
