@@ -1,0 +1,61 @@
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3 class="footer-title">
+            <i class="fas fa-sun"></i> Ali Vural Solar
+          </h3>
+          <p class="footer-desc">Güneş paneli ve rüzgar tribününden elde edilen temiz enerji ile ev, işyeri ve karavanlarınız için kesintisiz güç çözümleri sunuyoruz.</p>
+          <div class="footer-social">
+            <a href="https://wa.me/<%= settings.whatsapp || '905415753709' %>" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="tel:<%= settings.phone || '+905415753709' %>" aria-label="Telefon"><i class="fas fa-phone"></i></a>
+            <a href="mailto:<%= settings.email || 'info@alivuralsolar.com' %>" aria-label="E-posta"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-subtitle">Hızlı Erişim</h4>
+          <ul class="footer-links">
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><a href="/hakkimizda">Hakkımızda</a></li>
+            <li><a href="/hizmetler">Hizmetler</a></li>
+            <li><a href="/urunler">Ürünler</a></li>
+            <li><a href="/galeri">Galeri</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-subtitle">Hizmetler</h4>
+          <ul class="footer-links">
+            <li><a href="/hizmetler">Güneş Enerjisi Sistemleri</a></li>
+            <li><a href="/hizmetler">Rüzgar Enerjisi Çözümleri</a></li>
+            <li><a href="/hizmetler">Karavan Elektrik Sistemleri</a></li>
+            <li><a href="/hizmetler">Ev Elektrik Çözümleri</a></li>
+            <li><a href="/hizmetler">Elektrikli Ev Aletleri Tamiri</a></li>
+            <li><a href="/hizmetler">Jel Akü Satış ve Tamiri</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-subtitle">İletişim</h4>
+          <ul class="footer-contact">
+            <li><i class="fas fa-map-marker-alt"></i> <%= settings.address || 'Rızaşye Mahallesi 10058 Sk No:29 Merkez Osmaniye' %></li>
+            <li><i class="fas fa-phone"></i> <%= settings.phone || '+90 541 575 37 09' %></li>
+            <li><i class="fas fa-envelope"></i> <%= settings.email || 'info@alivuralsolar.com' %></li>
+            <li><i class="fas fa-clock"></i> <%= settings.working_hours || 'Pazartesi - Cumartesi: 08:00 - 18:00' %></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 @esyonel. Tüm hakları saklıdır.</p>
+        <p><a href="/admin">Admin Panel</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/<%= settings.whatsapp || '905415753709' %>" target="_blank" class="whatsapp-float" aria-label="WhatsApp ile iletişime geçin">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

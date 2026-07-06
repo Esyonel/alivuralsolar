@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Ali Vural Solar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="admin-main" id="adminMain">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="admin-user"><i class="fas fa-user-circle"></i> <span><%= user.username %></span></div>
+    </div>
+    <div class="admin-content">
+      <% if (typeof success !== 'undefined' && success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <% if (typeof error !== 'undefined' && error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <h1>Talep Yönetimi</h1>
+
+      <div class="page-tabs">
+        <a href="/admin/inquiries" class="tab <%= currentStatus === 'all' ? 'active' : '' %>">Tümü</a>
+        <a href="/admin/inquiries?status=new" class="tab <%= currentStatus === 'new' ? 'active' : '' %>">Yeni</a>
+        <a href="/admin/inquiries?status=read" class="tab <%= currentStatus === 'read' ? 'active' : '' %>">Okundu</a>
+        <a href="/admin/inquiries?status=replied" class="tab <%= currentStatus === 'replied' ? 'active' : '' %>">Yanıtlandı</a>
+      </div>
+
+      <% if (inquiries.length === 0) { %>
+        <p class="text-muted mt-20">Bu kategoride talep bulunmuyor.</p>
+      <% } else { %>
+      <div class="table-responsive mt-20">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>İsim</th>
+              <th>Telefon</th>
+              <th>E-posta</th>
+              <th>Konu</th>
+              <th>Mesaj</th>
+              <th>Durum</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% inquiries.forEach(function(inq) { %>
+            <tr>
+              <td><%= new Date(inq.created_at).toLocaleDateString('tr-TR') %></td>
+              <td><strong><%= inq.name %></strong></td>
+              <td><%= inq.phone || '-' %></td>
+              <td><%= inq.email || '-' %></td>
+              <td><%= inq.subject || '-' %></td>
+              <td class="msg-cell"><%= inq.message %></td>
+              <td>
+                <span class="badge badge-<%= inq.status === 'new' ? 'warning' : inq.status === 'read' ? 'info' : 'success' %>">
+                  <%= inq.status === 'new' ? 'Yeni' : inq.status === 'read' ? 'Okundu' : 'Yanıtlandı' %>
+                </span>
+              </td>
+              <td class="actions">
+                <form method="POST" action="/admin/inquiries/<%= inq.id %>/status" style="display:inline;">
+                  <select name="status" onchange="this.form.submit()" class="form-control-sm">
+                    <option value="new" <%= inq.status === 'new' ? 'selected' : '' %>>Yeni</option>
+                    <option value="read" <%= inq.status === 'read' ? 'selected' : '' %>>Okundu</option>
+                    <option value="replied" <%= inq.status === 'replied' ? 'selected' : '' %>>Yanıtlandı</option>
+                  </select>
+                </form>
+                <form method="POST" action="/admin/inquiries/<%= inq.id %>/delete" style="display:inline;" onsubmit="return confirm('Silmek istediğinize emin misiniz?')">
+                  <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

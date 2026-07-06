@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <h1 class="page-title"><%= pageContent.title || 'Galeri' %></h1>
+    <p class="page-subtitle"><%= pageContent.subtitle || 'Projelerimiz ve çalışmalarımızdan kareler.' %></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (galleryItems.length === 0) { %>
+      <div class="no-results">
+        <i class="fas fa-images"></i>
+        <p>Galeriye henüz görsel eklenmemiş.</p>
+      </div>
+    <% } else { %>
+    <div class="gallery-grid gallery-full">
+      <% galleryItems.forEach(function(item) { %>
+      <div class="gallery-item animate-on-scroll" data-src="<%= item.image %>">
+        <img src="<%= item.image %>" alt="<%= item.title || 'Galeri' %>" loading="lazy">
+        <div class="gallery-overlay">
+          <i class="fas fa-expand"></i>
+          <% if (item.title) { %>
+            <span><%= item.title %></span>
+          <% } %>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <img src="" alt="" id="lightboxImage">
+</div>
+
+<%- include('partials/footer') %>

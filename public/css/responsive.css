@@ -1,0 +1,372 @@
+/* ========================================
+   Ali Vural Solar - Responsive Tasarım
+   ======================================== */
+
+/* === Tablet (max-width: 1024px) === */
+@media (max-width: 1024px) {
+  .nav {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: var(--dark-alt);
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: var(--shadow-lg);
+    gap: 5px;
+    z-index: 999;
+    border-bottom: 1px solid var(--dark-border);
+  }
+
+  .nav.active {
+    display: flex;
+  }
+
+  .nav-link {
+    padding: 12px 16px;
+    width: 100%;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  .header-phone .phone-text {
+    display: none;
+  }
+
+  .hero {
+    height: auto;
+    min-height: auto;
+    padding: 40px 0;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+
+  .hero-categories {
+    justify-content: center;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-subtitle {
+    margin: 0 auto 28px;
+    text-align: center;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-trust {
+    justify-content: center;
+  }
+
+  .hero-illustration {
+    height: 390px;
+  }
+
+  .hero-illustration svg {
+    max-width: 550px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery-grid.gallery-full {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .product-detail {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .service-detail-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .service-detail-image {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+/* === Mobile (max-width: 768px) === */
+@media (max-width: 768px) {
+  .section {
+    padding: 50px 0;
+  }
+
+  .section-title {
+    font-size: 1.7rem;
+  }
+
+  .hero {
+    height: auto;
+    min-height: auto;
+    padding: 30px 0;
+  }
+
+  .hero-title {
+    font-size: 1.6rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+    padding: 0 10px;
+  }
+
+  .hero-categories {
+    font-size: 0.65rem;
+    gap: 4px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-trust {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-illustration {
+    height: 310px;
+  }
+
+  .hero-illustration svg {
+    max-width: 470px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid, .gallery-grid.gallery-full {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .product-detail-actions {
+    flex-direction: column;
+  }
+
+  .product-detail-actions .btn {
+    width: 100%;
+  }
+
+  .cta-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .modal-content {
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .contact-map {
+    height: 300px;
+  }
+
+  .category-filter {
+    gap: 8px;
+  }
+
+  .filter-btn {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+/* === Small Mobile (max-width: 480px) === */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .hero {
+    height: auto;
+    min-height: auto;
+    padding: 20px 0;
+  }
+
+  .hero-title {
+    font-size: 1.4rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .hero-categories {
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-illustration {
+    height: 280px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .btn-lg {
+    padding: 12px 24px;
+  }
+
+  .stat-item {
+    padding: 20px 15px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+
+  .gallery-grid, .gallery-grid.gallery-full {
+    grid-template-columns: 1fr;
+  }
+
+  .product-image {
+    height: 180px;
+  }
+
+  .about-img-placeholder {
+    height: 250px;
+    font-size: 3rem;
+  }
+
+  .service-detail-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+/* === Print === */
+@media print {
+  .header, .footer, .whatsapp-float, .hamburger {
+    display: none !important;
+  }
+
+  .main {
+    padding-top: 0 !important;
+  }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+  }
+}

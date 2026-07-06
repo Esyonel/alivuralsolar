@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <h1 class="page-title"><%= pageContent.title || 'Hakkımızda' %></h1>
+    <p class="page-subtitle"><%= pageContent.subtitle || 'Güneş enerjisi ve elektrik çözümlerinde güvenilir partneriniz.' %></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-content animate-on-scroll">
+        <h2><%= settings.company_name || 'Ali Vural Solar' %></h2>
+        <p class="about-text"><%= settings.about_text || 'Hakkımızda bilgisi henüz eklenmedi.' %></p>
+        
+        <div class="about-values">
+          <div class="value-item">
+            <div class="value-icon"><i class="fas fa-bullseye"></i></div>
+            <div>
+              <h3>Misyonumuz</h3>
+              <p><%= pageContent.mission || 'Müşterilerimize en kaliteli ürünleri ve en güvenilir hizmeti sunmak.' %></p>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon"><i class="fas fa-eye"></i></div>
+            <div>
+              <h3>Vizyonumuz</h3>
+              <p><%= pageContent.vision || 'Güneş enerjisi çözümlerinde bölgesinde lider kuruluş olmak.' %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-image animate-on-scroll">
+        <div class="about-img-placeholder">
+          <i class="fas fa-sun"></i>
+          <span>Güneş Enerjisi Çözümleri</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Bizimle İletişime Geçin</h2>
+      <p>Enerji ihtiyaçlarınız için uzman görüşü alın. Size en uygun çözümü birlikte belirleyelim.</p>
+      <div class="cta-buttons">
+        <a href="/iletisim" class="btn btn-primary">İletişim</a>
+        <a href="/hizmetler" class="btn btn-outline">Hizmetlerimiz</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

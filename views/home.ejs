@@ -1,0 +1,302 @@
+<%- include('partials/header') %>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container hero-content">
+    <div class="hero-text">
+      <div class="hero-categories">
+        <span>GÜNEŞ ENERJİSİ</span> · <span>RÜZGAR ENERJİSİ</span> · <span>KARAVAN</span> · <span>EV ELEKTRİĞİ</span> · <span>TAMİR</span>
+      </div>
+      <h1 class="hero-title animate-fade-up"><%= pageContent.hero_title || 'Güneşi enerjiye, enerjiyi hayata dönüştürüyoruz.' %></h1>
+      <p class="hero-subtitle animate-fade-up delay-1"><%= pageContent.hero_subtitle || 'Güneş paneli ve rüzgar tribününden elde edilen temiz enerji ile ev, işyeri ve karavanlarınız için kesintisiz güç. Plus, elektrikli ev aletleri tamiri ve jel akü tamiri hizmetleri.' %></p>
+      <div class="hero-buttons animate-fade-up delay-2">
+        <a href="/urunler" class="btn btn-primary"><%= pageContent.hero_cta || 'Paketleri İncele' %></a>
+        <a href="/iletisim" class="btn btn-outline">Ücretsiz Keşif İste</a>
+      </div>
+      <div class="hero-trust animate-fade-up delay-2">
+        <div class="hero-trust-item"><i class="fas fa-check-circle"></i> Yetkili bayilik</div>
+        <div class="hero-trust-item"><i class="fas fa-shield-alt"></i> 10 yıl garanti</div>
+        <div class="hero-trust-item"><i class="fas fa-lock"></i> Sigortalı montaj</div>
+      </div>
+    </div>
+    <div class="hero-illustration animate-fade-up delay-1">
+      <svg viewBox="0 0 520 280" width="100%" role="img" aria-label="Güneş ve rüzgar enerjisinden eve enerji akış şeması">
+        <defs>
+          <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f5a623;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:1" />
+          </linearGradient>
+          <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4fb0c6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#2d8a9e;stop-opacity:1" />
+          </linearGradient>
+          <linearGradient id="windGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#7ec8e3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4a9cb8;stop-opacity:1" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <style>
+          @keyframes turbineSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+          .turbine-blades { transform-origin: 55px 130px; animation: turbineSpin 3s linear infinite; }
+          .flowpath { stroke-dasharray: 6 7; animation: flow 1.6s linear infinite; }
+          @keyframes flow { to { stroke-dashoffset: -52; } }
+        </style>
+
+        <!-- GÜNEŞ YOLU (Üst sıra) -->
+        <circle cx="55" cy="55" r="24" fill="url(#sunGrad)" filter="url(#glow)"/>
+        <g stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
+          <path d="M55 18v8M55 84v8M18 55h8M84 55h8M28 28l6 6M76 76l6 6M82 28l-6 6M34 76l-6 6"/>
+        </g>
+
+        <!-- GÜNEŞ PANELİ -->
+        <rect x="140" y="32" width="60" height="42" rx="3" fill="none" stroke="url(#tealGrad)" stroke-width="2"/>
+        <path d="M140 32 200 74M200 32 140 74M140 46h60M140 60h60" stroke="#4fb0c6" stroke-width="1"/>
+
+        <!-- GÜNEŞ → PANEL akışı -->
+        <path d="M84 55h52" class="flowpath" stroke="#f5a623" stroke-width="2" fill="none"/>
+
+        <!-- PANEL → İNVERTER akışı -->
+        <path d="M205 53h30v52h10" class="flowpath" stroke="#4fb0c6" stroke-width="2" fill="none"/>
+
+        <!-- RÜZGAR YOLU (Alt sıra) -->
+        <!-- Rüzgar Tribünü - Kule ve Taban -->
+        <line x1="55" y1="140" x2="55" y2="205" stroke="#7ec8e3" stroke-width="3"/>
+        <line x1="38" y1="205" x2="72" y2="205" stroke="#7ec8e3" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Dönen Kanatlar (120° aralıkla simetrik) -->
+        <g class="turbine-blades" stroke="#7ec8e3" stroke-width="3" stroke-linecap="round" fill="none">
+          <path d="M55 130 L55 102"/>
+          <path d="M55 130 L79.2 144"/>
+          <path d="M55 130 L30.8 144"/>
+        </g>
+        <circle cx="55" cy="130" r="5" fill="url(#windGrad)" filter="url(#glow)"/>
+
+        <!-- RÜZGAR → İNVERTER akışı -->
+        <path d="M80 155h160" class="flowpath" stroke="#7ec8e3" stroke-width="2" fill="none"/>
+
+        <!-- İNVERTER (Batarya - Dolma Animasyonlu) -->
+        <rect x="250" y="85" width="40" height="65" rx="6" fill="none" stroke="#eceee9" stroke-width="2"/>
+        <rect x="265" y="80" width="10" height="6" rx="2" fill="#eceee9"/>
+        <!-- Batarya dolgu animasyonu -->
+        <clipPath id="batteryClip">
+          <rect x="253" y="88" width="34" height="59" rx="4"/>
+        </clipPath>
+        <g clip-path="url(#batteryClip)">
+          <rect class="battery-fill" x="253" y="147" width="34" height="0" rx="0" fill="#f5a623">
+            <animate attributeName="y" from="147" to="88" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="height" from="0" to="59" dur="2s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+        <text x="260" y="124" fill="#eceee9" font-family="IBM Plex Mono" font-size="12">⚡</text>
+
+        <!-- İNVERTER → EV akışı -->
+        <path d="M295 105h60" class="flowpath" stroke="#eceee9" stroke-width="2" fill="none"/>
+
+        <!-- EV (Ev şeklinde) -->
+        <g stroke="#eceee9" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M370 95 L390 75 L410 95"/>
+          <rect x="375" y="95" width="30" height="25" rx="1"/>
+          <rect x="386" y="105" width="8" height="15" rx="1"/>
+        </g>
+
+        <!-- İNVERTER → KARAVAN akışı -->
+        <path d="M295 125h60v40" class="flowpath" stroke="#eceee9" stroke-width="1.5" fill="none"/>
+
+        <!-- KARAVAN (Ev'in altında) -->
+        <g stroke="#eceee9" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round">
+          <rect x="372" y="150" width="38" height="18" rx="4"/>
+          <path d="M372 158 L368 158 L368 168 L372 168"/>
+          <circle cx="380" cy="170" r="3"/>
+          <circle cx="402" cy="170" r="3"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Intro Text -->
+<section class="section intro-section">
+  <div class="container">
+    <div class="intro-content">
+      <h2>Temiz Enerji, Güçlü Gelecek</h2>
+      <p>Güneş ve rüzgar enerjisinden elde edilen sürdürülebilir güç çözümleriyle evinizi, işyerinizi ve karavanınızı enerji bağımsızlığına kavuşturuyoruz. Uzman kadromuz, kaliteli ürünler ve sigortalı montaj hizmetiyle yanınızda.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="section products-section" style="padding-top: 30px;">
+  <div class="container">
+    <div class="products-grid">
+      <% featuredProducts.forEach(function(product) { %>
+      <div class="product-card animate-on-scroll">
+        <div class="product-image">
+          <% if (product.image) { %>
+            <img src="<%= product.image %>" alt="<%= product.name %>" loading="lazy">
+          <% } else { %>
+            <div class="product-placeholder"><i class="fas fa-solar-panel"></i></div>
+          <% } %>
+          <% if (product.category_name) { %>
+            <span class="product-badge"><%= product.category_name %></span>
+          <% } %>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name"><%= product.name %></h3>
+          <p class="product-desc"><%= product.description ? product.description.substring(0, 100) + '...' : '' %></p>
+          <div class="product-footer">
+            <span class="product-price"><%= product.price || 'Fiyat için arayın' %></span>
+            <button class="btn btn-sm btn-primary info-request-btn" 
+                    data-product-id="<%= product.id %>" 
+                    data-product-name="<%= product.name %>">
+              Bilgi Al
+            </button>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <div class="section-cta">
+      <a href="/urunler" class="btn btn-primary">Tüm Ürünleri Gör</a>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section class="section services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Hizmetlerimiz</h2>
+      <p class="section-subtitle">Profesyonel ve güvenilir enerji çözümleri sunuyoruz.</p>
+    </div>
+    <div class="services-grid">
+      <% services.forEach(function(service) { %>
+      <div class="service-card animate-on-scroll">
+        <div class="service-icon">
+          <i class="<%= service.icon || 'fas fa-bolt' %>"></i>
+        </div>
+        <h3 class="service-title"><%= service.title %></h3>
+        <p class="service-desc"><%= service.description %></p>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<!-- Why Us Section -->
+<section class="section why-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Neden Biz?</h2>
+      <p class="section-subtitle">Güneş enerjisi çözümlerinde güvenilir tercih.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card animate-on-scroll">
+        <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Güvenilir Hizmet</h3>
+        <p>Alanında uzman kadromuzla güvenilir ve kaliteli hizmet sunuyoruz.</p>
+      </div>
+      <div class="why-card animate-on-scroll">
+        <div class="why-icon"><i class="fas fa-award"></i></div>
+        <h3>10 Yıl Garanti</h3>
+        <p>Ürünlerimiz ve montaj hizmetlerimiz 10 yıla kadar garanti kapsamındadır.</p>
+      </div>
+      <div class="why-card animate-on-scroll">
+        <div class="why-icon"><i class="fas fa-headset"></i></div>
+        <h3>Teknik Destek</h3>
+        <p>7/24 teknik destek ve hızlı müdahale garantisi veriyoruz.</p>
+      </div>
+      <div class="why-card animate-on-scroll">
+        <div class="why-icon"><i class="fas fa-tools"></i></div>
+        <h3>Profesyonel Montaj</h3>
+        <p>Sertifikalı teknisyenlerimizle profesyonel montaj hizmeti sunuyoruz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Preview -->
+<% if (galleryItems.length > 0) { %>
+<section class="section gallery-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Galeri</h2>
+      <p class="section-subtitle">Projelerimiz ve çalışmalarımızdan kareler.</p>
+    </div>
+    <div class="gallery-grid">
+      <% galleryItems.forEach(function(item) { %>
+      <div class="gallery-item animate-on-scroll">
+        <img src="<%= item.image %>" alt="<%= item.title || 'Galeri' %>" loading="lazy">
+        <% if (item.title) { %>
+          <div class="gallery-overlay">
+            <span><%= item.title %></span>
+          </div>
+        <% } %>
+      </div>
+      <% }); %>
+    </div>
+    <div class="section-cta">
+      <a href="/galeri" class="btn btn-outline">Tüm Galeriyi Gör</a>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- CTA Section -->
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Ücretsiz Keşif İçin Bize Ulaşın</h2>
+      <p>Enerji ihtiyaçlarınız için uzman görüşü alın. Size en uygun çözümü birlikte belirleyelim.</p>
+      <div class="cta-buttons">
+        <a href="https://wa.me/<%= settings.whatsapp || '905415753709' %>" target="_blank" class="btn btn-whatsapp">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="tel:<%= settings.phone || '+905415753709' %>" class="btn btn-primary">
+          <i class="fas fa-phone"></i> Hemen Ara
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Info Request Modal -->
+<div class="modal" id="infoModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Bilgi Talebi</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <form id="infoRequestForm">
+      <input type="hidden" name="product_id" id="modalProductId">
+      <div class="form-group">
+        <label for="modalProductName">Ürün</label>
+        <input type="text" id="modalProductName" readonly class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalName">Adınız Soyadınız *</label>
+        <input type="text" name="name" id="modalName" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalPhone">Telefon *</label>
+        <input type="tel" name="phone" id="modalPhone" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalMessage">Mesajınız</label>
+        <textarea name="message" id="modalMessage" rows="3" class="form-control" placeholder="Ürün hakkında bilgi talep ediyorum."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Talep Gönder</button>
+    </form>
+    <div id="modalSuccess" class="alert alert-success" style="display:none;"></div>
+    <div id="modalError" class="alert alert-error" style="display:none;"></div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

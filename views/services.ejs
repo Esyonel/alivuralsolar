@@ -1,0 +1,50 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <h1 class="page-title"><%= pageContent.title || 'Hizmetlerimiz' %></h1>
+    <p class="page-subtitle"><%= pageContent.subtitle || 'Profesyonel ve güvenilir enerji çözümleri sunuyoruz.' %></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="services-list">
+      <% services.forEach(function(service) { %>
+      <div class="service-detail-card animate-on-scroll">
+        <div class="service-detail-icon">
+          <i class="<%= service.icon || 'fas fa-bolt' %>"></i>
+        </div>
+        <div class="service-detail-content">
+          <h3><%= service.title %></h3>
+          <p><%= service.description %></p>
+        </div>
+        <% if (service.image) { %>
+        <div class="service-detail-image">
+          <img src="<%= service.image %>" alt="<%= service.title %>" loading="lazy">
+        </div>
+        <% } %>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Hizmetlerimiz Hakkında Bilgi Alın</h2>
+      <p>Uzman ekibimiz sizin için hazır. Hemen iletişime geçin.</p>
+      <div class="cta-buttons">
+        <a href="https://wa.me/<%= settings.whatsapp || '905415753709' %>" target="_blank" class="btn btn-whatsapp">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="tel:<%= settings.phone || '+905415753709' %>" class="btn btn-primary">
+          <i class="fas fa-phone"></i> Hemen Ara
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

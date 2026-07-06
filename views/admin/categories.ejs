@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Ali Vural Solar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="admin-main" id="adminMain">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="admin-user"><i class="fas fa-user-circle"></i> <span><%= user.username %></span></div>
+    </div>
+    <div class="admin-content">
+      <% if (typeof success !== 'undefined' && success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <% if (typeof error !== 'undefined' && error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <div class="content-header">
+        <h1>Kategori Yönetimi</h1>
+        <button class="btn btn-primary" onclick="document.getElementById('addModal').style.display='flex'"><i class="fas fa-plus"></i> Yeni Kategori</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead><tr><th>Sıra</th><th>Kategori Adı</th><th>Slug</th><th>İşlem</th></tr></thead>
+          <tbody>
+            <% categories.forEach(function(cat) { %>
+            <tr>
+              <td><%= cat.sort_order %></td>
+              <td><strong><%= cat.name %></strong></td>
+              <td><%= cat.slug %></td>
+              <td class="actions">
+                <button class="btn btn-sm btn-info" onclick='editCategory(<%= JSON.stringify(cat) %>)'><i class="fas fa-edit"></i></button>
+                <form method="POST" action="/admin/categories/<%= cat.id %>/delete" style="display:inline;" onsubmit="return confirm('Silmek istediğinize emin misiniz?')">
+                  <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="addModal">
+    <div class="modal-content">
+      <div class="modal-header"><h3>Yeni Kategori</h3><button class="modal-close" onclick="document.getElementById('addModal').style.display='none'">&times;</button></div>
+      <form method="POST" action="/admin/categories">
+        <div class="form-group"><label>Kategori Adı *</label><input type="text" name="name" required class="form-control"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Slug *</label><input type="text" name="slug" required class="form-control" placeholder="ornek-slug"></div>
+          <div class="form-group"><label>Sıra</label><input type="number" name="sort_order" value="0" class="form-control"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Ekle</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header"><h3>Kategoriyi Düzenle</h3><button class="modal-close" onclick="document.getElementById('editModal').style.display='none'">&times;</button></div>
+      <form method="POST" id="editCatForm">
+        <div class="form-group"><label>Kategori Adı *</label><input type="text" name="name" id="editName" required class="form-control"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Slug *</label><input type="text" name="slug" id="editSlug" required class="form-control"></div>
+          <div class="form-group"><label>Sıra</label><input type="number" name="sort_order" id="editSort" class="form-control"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Güncelle</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+  <script>
+    function editCategory(cat) {
+      document.getElementById('editCatForm').action = '/admin/categories/' + cat.id;
+      document.getElementById('editName').value = cat.name;
+      document.getElementById('editSlug').value = cat.slug;
+      document.getElementById('editSort').value = cat.sort_order;
+      document.getElementById('editModal').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>

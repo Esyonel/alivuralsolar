@@ -1,0 +1,93 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <h1 class="page-title"><%= pageContent.title || 'Ürünler ve Fiyatlar' %></h1>
+    <p class="page-subtitle"><%= pageContent.subtitle || 'Kaliteli ürünler uygun fiyatlarla. Detaylı bilgi için bize ulaşın.' %></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <!-- Category Filter -->
+    <div class="category-filter">
+      <a href="/urunler" class="filter-btn <%= !selectedCategory ? 'active' : '' %>">Tümü</a>
+      <% categories.forEach(function(cat) { %>
+        <a href="/urunler?kategori=<%= cat.id %>" class="filter-btn <%= selectedCategory == cat.id ? 'active' : '' %>"><%= cat.name %></a>
+      <% }); %>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      <% if (products.length === 0) { %>
+        <div class="no-results">
+          <i class="fas fa-box-open"></i>
+          <p>Bu kategoride henüz ürün bulunmuyor.</p>
+        </div>
+      <% } %>
+      <% products.forEach(function(product) { %>
+      <div class="product-card animate-on-scroll">
+        <div class="product-image">
+          <% if (product.image) { %>
+            <img src="<%= product.image %>" alt="<%= product.name %>" loading="lazy">
+          <% } else { %>
+            <div class="product-placeholder"><i class="fas fa-solar-panel"></i></div>
+          <% } %>
+          <% if (product.category_name) { %>
+            <span class="product-badge"><%= product.category_name %></span>
+          <% } %>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name"><%= product.name %></h3>
+          <p class="product-desc"><%= product.description ? product.description.substring(0, 120) + '...' : '' %></p>
+          <div class="product-footer">
+            <span class="product-price"><%= product.price || 'Fiyat için arayın' %></span>
+            <div class="product-actions">
+              <a href="/urun/<%= product.id %>" class="btn btn-sm btn-outline">Detayları Gör</a>
+              <button class="btn btn-sm btn-primary info-request-btn" 
+                      data-product-id="<%= product.id %>" 
+                      data-product-name="<%= product.name %>">
+                Bilgi Al
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<!-- Info Request Modal -->
+<div class="modal" id="infoModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Bilgi Talebi</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <form id="infoRequestForm">
+      <input type="hidden" name="product_id" id="modalProductId">
+      <div class="form-group">
+        <label for="modalProductName">Ürün</label>
+        <input type="text" id="modalProductName" readonly class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalName">Adınız Soyadınız *</label>
+        <input type="text" name="name" id="modalName" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalPhone">Telefon *</label>
+        <input type="tel" name="phone" id="modalPhone" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalMessage">Mesajınız</label>
+        <textarea name="message" id="modalMessage" rows="3" class="form-control" placeholder="Ürün hakkında bilgi talep ediyorum."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Talep Gönder</button>
+    </form>
+    <div id="modalSuccess" class="alert alert-success" style="display:none;"></div>
+    <div id="modalError" class="alert alert-error" style="display:none;"></div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

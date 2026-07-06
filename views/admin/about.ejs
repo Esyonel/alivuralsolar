@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Ali Vural Solar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="admin-main" id="adminMain">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="admin-user"><i class="fas fa-user-circle"></i> <span><%= user.username %></span></div>
+    </div>
+    <div class="admin-content">
+      <% if (typeof success !== 'undefined' && success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <% if (typeof error !== 'undefined' && error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <h1>Hakkımızda Yönetimi</h1>
+
+      <form method="POST" action="/admin/about" class="admin-form">
+        <div class="form-group">
+          <label>Hakkımızda Metni</label>
+          <textarea name="about_text" rows="10" class="form-control"><%= settings.about_text || '' %></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Kaydet</button>
+      </form>
+    </div>
+  </div>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

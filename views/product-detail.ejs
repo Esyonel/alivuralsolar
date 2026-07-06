@@ -1,0 +1,107 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/">Ana Sayfa</a> / <a href="/urunler">Ürünler</a> / <span><%= product.name %></span>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="product-detail">
+      <div class="product-detail-image animate-on-scroll">
+        <% if (product.image) { %>
+          <img src="<%= product.image %>" alt="<%= product.name %>">
+        <% } else { %>
+          <div class="product-detail-placeholder"><i class="fas fa-solar-panel"></i></div>
+        <% } %>
+      </div>
+      <div class="product-detail-info animate-on-scroll">
+        <% if (product.category_name) { %>
+          <span class="product-badge"><%= product.category_name %></span>
+        <% } %>
+        <h1><%= product.name %></h1>
+        <div class="product-detail-price">
+          <span class="price-label">Fiyat:</span>
+          <span class="price-value"><%= product.price || 'Fiyat için arayın' %></span>
+        </div>
+        <div class="product-detail-desc">
+          <p><%= product.description || 'Ürün açıklaması henüz eklenmedi.' %></p>
+        </div>
+        <div class="product-detail-actions">
+          <button class="btn btn-primary btn-lg info-request-btn" 
+                  data-product-id="<%= product.id %>" 
+                  data-product-name="<%= product.name %>">
+            <i class="fas fa-info-circle"></i> Bilgi Al
+          </button>
+          <a href="https://wa.me/<%= settings.whatsapp || '905415753709' %>?text=<%= encodeURIComponent(product.name + ' hakkında bilgi almak istiyorum.') %>" 
+             target="_blank" class="btn btn-whatsapp btn-lg">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <% if (relatedProducts.length > 0) { %>
+    <div class="related-products">
+      <h2>Benzer Ürünler</h2>
+      <div class="products-grid">
+        <% relatedProducts.forEach(function(rp) { %>
+        <div class="product-card">
+          <div class="product-image">
+            <% if (rp.image) { %>
+              <img src="<%= rp.image %>" alt="<%= rp.name %>" loading="lazy">
+            <% } else { %>
+              <div class="product-placeholder"><i class="fas fa-solar-panel"></i></div>
+            <% } %>
+          </div>
+          <div class="product-info">
+            <h3 class="product-name"><%= rp.name %></h3>
+            <div class="product-footer">
+              <span class="product-price"><%= rp.price || 'Fiyat için arayın' %></span>
+              <a href="/urun/<%= rp.id %>" class="btn btn-sm btn-outline">Detay</a>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Info Request Modal -->
+<div class="modal" id="infoModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Bilgi Talebi</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <form id="infoRequestForm">
+      <input type="hidden" name="product_id" id="modalProductId">
+      <div class="form-group">
+        <label for="modalProductName">Ürün</label>
+        <input type="text" id="modalProductName" readonly class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalName">Adınız Soyadınız *</label>
+        <input type="text" name="name" id="modalName" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalPhone">Telefon *</label>
+        <input type="tel" name="phone" id="modalPhone" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="modalMessage">Mesajınız</label>
+        <textarea name="message" id="modalMessage" rows="3" class="form-control" placeholder="Ürün hakkında bilgi talep ediyorum."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Talep Gönder</button>
+    </form>
+    <div id="modalSuccess" class="alert alert-success" style="display:none;"></div>
+    <div id="modalError" class="alert alert-error" style="display:none;"></div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

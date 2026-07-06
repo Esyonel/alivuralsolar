@@ -1,0 +1,124 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <h1 class="page-title"><%= pageContent.title || 'İletişim' %></h1>
+    <p class="page-subtitle"><%= pageContent.subtitle || 'Sorularınız ve talepleriniz için bize ulaşın.' %></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Contact Info -->
+      <div class="contact-info animate-on-scroll">
+        <h2>İletişim Bilgileri</h2>
+        
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <h4>Adres</h4>
+            <p><%= settings.address || 'Rızaşye Mahallesi 10058 Sk No:29 Merkez Osmaniye' %></p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-phone"></i></div>
+          <div>
+            <h4>Telefon</h4>
+            <p><a href="tel:<%= settings.phone || '+905415753709' %>"><%= settings.phone || '+90 541 575 37 09' %></a></p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon whatsapp"><i class="fab fa-whatsapp"></i></div>
+          <div>
+            <h4>WhatsApp</h4>
+            <p><a href="https://wa.me/<%= settings.whatsapp || '905415753709' %>" target="_blank"><%= settings.phone || '+90 541 575 37 09' %></a></p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <h4>E-posta</h4>
+            <p><a href="mailto:<%= settings.email || 'info@alivuralsolar.com' %>"><%= settings.email || 'info@alivuralsolar.com' %></a></p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <h4>Çalışma Saatleri</h4>
+            <p><%= settings.working_hours || 'Pazartesi - Cumartesi: 08:00 - 18:00' %></p>
+          </div>
+        </div>
+
+        <div class="contact-buttons">
+          <a href="https://wa.me/<%= settings.whatsapp || '905415753709' %>" target="_blank" class="btn btn-whatsapp btn-block">
+            <i class="fab fa-whatsapp"></i> WhatsApp ile İletişim
+          </a>
+          <a href="tel:<%= settings.phone || '+905415753709' %>" class="btn btn-primary btn-block">
+            <i class="fas fa-phone"></i> Hemen Ara
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form-wrapper animate-on-scroll">
+        <h2>Bize Yazın</h2>
+        <form id="contactForm">
+          <div class="form-group">
+            <label for="contactName">Adınız Soyadınız *</label>
+            <input type="text" name="name" id="contactName" required class="form-control">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactEmail">E-posta</label>
+              <input type="email" name="email" id="contactEmail" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Telefon</label>
+              <input type="tel" name="phone" id="contactPhone" class="form-control">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="contactSubject">Konu</label>
+            <input type="text" name="subject" id="contactSubject" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="contactMessage">Mesajınız *</label>
+            <textarea name="message" id="contactMessage" rows="5" required class="form-control"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Mesaj Gönder</button>
+        </form>
+        <div id="contactSuccess" class="alert alert-success" style="display:none;"></div>
+        <div id="contactError" class="alert alert-error" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div class="map-section animate-on-scroll">
+      <h2>Konumumuz</h2>
+      <div id="map" class="contact-map"></div>
+    </div>
+  </div>
+</section>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const lat = parseFloat('<%= settings.map_lat || "37.0748" %>');
+    const lng = parseFloat('<%= settings.map_lng || "37.2153" %>');
+    const map = L.map('map').setView([lat, lng], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    L.marker([lat, lng]).addTo(map)
+      .bindPopup('<strong><%= settings.company_name || "Ali Vural Solar" %></strong><br><%= settings.address || "Rızaşye Mahallesi" %>')
+      .openPopup();
+  });
+</script>
+
+<%- include('partials/footer') %>

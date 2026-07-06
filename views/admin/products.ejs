@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Ali Vural Solar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-sidebar') %>
+  
+  <div class="admin-main" id="adminMain">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="admin-user">
+        <i class="fas fa-user-circle"></i>
+        <span><%= user.username %></span>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <div class="content-header">
+        <h1>Ürün Yönetimi</h1>
+        <button class="btn btn-primary" onclick="document.getElementById('addModal').style.display='flex'">
+          <i class="fas fa-plus"></i> Yeni Ürün Ekle
+        </button>
+      </div>
+
+      <% if (products.length === 0) { %>
+        <p class="text-muted">Henüz ürün bulunmuyor.</p>
+      <% } else { %>
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Görsel</th>
+              <th>Ürün Adı</th>
+              <th>Kategori</th>
+              <th>Fiyat</th>
+              <th>Öne Çıkan</th>
+              <th>Durum</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% products.forEach(function(product) { %>
+            <tr>
+              <td>
+                <% if (product.image) { %>
+                  <img src="<%= product.image %>" alt="" class="table-img">
+                <% } else { %>
+                  <div class="table-img-placeholder"><i class="fas fa-image"></i></div>
+                <% } %>
+              </td>
+              <td><strong><%= product.name %></strong></td>
+              <td><%= product.category_name || '-' %></td>
+              <td><%= product.price || '-' %></td>
+              <td><span class="badge badge-<%= product.featured ? 'success' : 'secondary' %>"><%= product.featured ? 'Evet' : 'Hayır' %></span></td>
+              <td><span class="badge badge-<%= product.status ? 'success' : 'danger' %>"><%= product.status ? 'Aktif' : 'Pasif' %></span></td>
+              <td class="actions">
+                <button class="btn btn-sm btn-info" onclick='editProduct(<%= JSON.stringify(product) %>)'><i class="fas fa-edit"></i></button>
+                <form method="POST" action="/admin/products/<%= product.id %>/delete" style="display:inline;" onsubmit="return confirm('Bu ürünü silmek istediğinize emin misiniz?')">
+                  <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div class="modal" id="addModal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h3>Yeni Ürün Ekle</h3>
+        <button class="modal-close" onclick="document.getElementById('addModal').style.display='none'">&times;</button>
+      </div>
+      <form method="POST" action="/admin/products" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ürün Adı *</label>
+            <input type="text" name="name" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Kategori</label>
+            <select name="category_id" class="form-control">
+              <option value="">Kategori Seçin</option>
+              <% categories.forEach(function(cat) { %>
+                <option value="<%= cat.id %>"><%= cat.name %></option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Açıklama</label>
+          <textarea name="description" rows="3" class="form-control"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fiyat</label>
+            <input type="text" name="price" class="form-control" placeholder="Örn: 45.000₺">
+          </div>
+          <div class="form-group">
+            <label>Görsel</label>
+            <input type="file" name="image" accept="image/*" class="form-control">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><input type="checkbox" name="featured" value="1"> Öne Çıkan Ürün</label>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" name="status" value="1" checked> Aktif</label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Ürünü Ekle</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Product Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h3>Ürünü Düzenle</h3>
+        <button class="modal-close" onclick="document.getElementById('editModal').style.display='none'">&times;</button>
+      </div>
+      <form method="POST" id="editProductForm" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ürün Adı *</label>
+            <input type="text" name="name" id="editName" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Kategori</label>
+            <select name="category_id" id="editCategory" class="form-control">
+              <option value="">Kategori Seçin</option>
+              <% categories.forEach(function(cat) { %>
+                <option value="<%= cat.id %>"><%= cat.name %></option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Açıklama</label>
+          <textarea name="description" id="editDescription" rows="3" class="form-control"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fiyat</label>
+            <input type="text" name="price" id="editPrice" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Yeni Görsel (opsiyonel)</label>
+            <input type="file" name="image" accept="image/*" class="form-control">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><input type="checkbox" name="featured" id="editFeatured" value="1"> Öne Çıkan Ürün</label>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" name="status" id="editStatus" value="1"> Aktif</label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Güncelle</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+  <script>
+    function editProduct(product) {
+      document.getElementById('editProductForm').action = '/admin/products/' + product.id;
+      document.getElementById('editName').value = product.name;
+      document.getElementById('editCategory').value = product.category_id || '';
+      document.getElementById('editDescription').value = product.description || '';
+      document.getElementById('editPrice').value = product.price || '';
+      document.getElementById('editFeatured').checked = product.featured === 1;
+      document.getElementById('editStatus').checked = product.status === 1;
+      document.getElementById('editModal').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>

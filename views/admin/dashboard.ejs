@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Ali Vural Solar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-sidebar') %>
+  
+  <div class="admin-main" id="adminMain">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="admin-user">
+        <i class="fas fa-user-circle"></i>
+        <span><%= user.username %></span>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <h1>Dashboard</h1>
+
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: #FF6B00;"><i class="fas fa-box"></i></div>
+          <div class="stat-card-info">
+            <h3><%= stats.products %></h3>
+            <p>Toplam Ürün</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: #4FC3F7;"><i class="fas fa-tags"></i></div>
+          <div class="stat-card-info">
+            <h3><%= stats.categories %></h3>
+            <p>Kategori</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: #4CAF50;"><i class="fas fa-cogs"></i></div>
+          <div class="stat-card-info">
+            <h3><%= stats.services %></h3>
+            <p>Hizmet</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: #9C27B0;"><i class="fas fa-images"></i></div>
+          <div class="stat-card-info">
+            <h3><%= stats.gallery %></h3>
+            <p>Galeri</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: #f44336;"><i class="fas fa-envelope"></i></div>
+          <div class="stat-card-info">
+            <h3><%= stats.inquiries %></h3>
+            <p>Toplam Talep</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: #FF9800;"><i class="fas fa-envelope-open"></i></div>
+          <div class="stat-card-info">
+            <h3><%= stats.newInquiries %></h3>
+            <p>Yeni Talep</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <h2>Son Talepler</h2>
+        <% if (recentInquiries.length === 0) { %>
+          <p class="text-muted">Henüz talep bulunmuyor.</p>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Tarih</th>
+                <th>İsim</th>
+                <th>Telefon</th>
+                <th>Konu</th>
+                <th>Durum</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% recentInquiries.forEach(function(inq) { %>
+              <tr>
+                <td><%= new Date(inq.created_at).toLocaleDateString('tr-TR') %></td>
+                <td><%= inq.name %></td>
+                <td><%= inq.phone || '-' %></td>
+                <td><%= inq.subject || '-' %></td>
+                <td>
+                  <span class="badge badge-<%= inq.status === 'new' ? 'warning' : inq.status === 'read' ? 'info' : 'success' %>">
+                    <%= inq.status === 'new' ? 'Yeni' : inq.status === 'read' ? 'Okundu' : 'Yanıtlandı' %>
+                  </span>
+                </td>
+                <td>
+                  <form method="POST" action="/admin/inquiries/<%= inq.id %>/status" style="display:inline;">
+                    <select name="status" onchange="this.form.submit()" class="form-control-sm">
+                      <option value="new" <%= inq.status === 'new' ? 'selected' : '' %>>Yeni</option>
+                      <option value="read" <%= inq.status === 'read' ? 'selected' : '' %>>Okundu</option>
+                      <option value="replied" <%= inq.status === 'replied' ? 'selected' : '' %>>Yanıtlandı</option>
+                    </select>
+                  </form>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
