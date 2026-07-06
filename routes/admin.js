@@ -373,4 +373,46 @@ router.post('/inquiries/:id/delete', authMiddleware, async (req, res) => {
   res.redirect('/admin/inquiries');
 });
 
+// === PASSWORD CHANGE ===
+router.get('/password', authMiddleware, (req, res) => {
+  res.render('admin/password', { title: 'Şifre Değiştir', user: req.session.user });
+});
+
+router.post('/password', authMiddleware, async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const { current_password, new_password, confirm_password } = req.body;
+
+  if (!current_password || !new_password || !confirm_password) {
+    req.session.error = 'Tüm alanları doldurun.';
+    return res.redirect('/admin/password');
+  }
+
+  if (new_password !== confirm_password) {
+    req.session.error = 'Yeni şifreler eşleşmiyor.';
+    return res.redirect('/admin/password');
+  }
+
+  if (new_password.length < 6) {
+    req.session.error = 'Yeni şifre en az 6 karakter olmalı.';
+    return res.redirect('/admin/password');
+  }
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', req.session.user.id)
+    .single();
+
+  if (!user || !bcrypt.compareSync(current_password, user.password)) {
+    req.session.error = 'Mevcut şifre hatalı.';
+    return res.redirect('/admin/password');
+  }
+
+  const hash = bcrypt.hashSync(new_password, 10);
+  await supabase.from('users').update({ password: hash }).eq('id', req.session.user.id);
+
+  req.session.success = 'Şifre başarıyla güncellendi.';
+  res.redirect('/admin/password');
+});
+
 module.exports = router;
