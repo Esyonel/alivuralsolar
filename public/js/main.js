@@ -206,4 +206,15 @@ document.addEventListener('DOMContentLoaded', function() {
       closeLightbox();
     }
   });
+
+  // Visitor Counter
+  fetch('/api/stats')
+    .then(r => r.json())
+    .then(data => {
+      const totalEl = document.getElementById('totalVisitors');
+      const onlineEl = document.getElementById('onlineVisitors');
+      if (totalEl) totalEl.innerHTML = '<i class="fas fa-users"></i> Toplam: ' + (data.total || 0);
+      if (onlineEl) onlineEl.innerHTML = '<i class="fas fa-circle" style="color:#4CAF50; font-size:0.6rem;"></i> Çevrimiçi: ' + (data.online || 0);
+    })
+    .catch(() => {});
 });

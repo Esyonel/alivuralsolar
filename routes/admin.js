@@ -415,4 +415,117 @@ router.post('/password', authMiddleware, async (req, res) => {
   res.redirect('/admin/password');
 });
 
+// === USER MANAGEMENT ===
+router.get('/users', authMiddleware, async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const { data: users } = await supabase.from('users').select('id, username, role, created_at').order('created_at', { ascending: true });
+  res.render('admin/users', { title: 'Kullanıcı Yönetimi', users: users || [], currentUserId: req.session.user.id, user: req.session.user });
+});
+
+router.post('/users', authMiddleware, async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const { username, password, role } = req.body;
+
+  if (!username || !password) {
+    req.session.error = 'Kullanıcı adı ve şifre zorunludur.';
+    return res.redirect('/admin/users');
+  }
+
+  if (password.length < 6) {
+    req.session.error = 'Şifre en az 6 karakter olmalı.';
+    return res.redirect('/admin/users');
+  }
+
+  const { data: existing } = await supabase.from('users').select('id').eq('username', username).single();
+  if (existing) {
+    req.session.error = 'Bu kullanıcı adı zaten var.';
+    return res.redirect('/admin/users');
+  }
+
+  const hash = bcrypt.hashSync(password, 10);
+  await supabase.from('users').insert([{ username, password: hash, role: role || 'admin' }]);
+
+  req.session.success = 'Kullanıcı başarıyla eklendi.';
+  res.redirect('/admin/users');
+});
+
+router.post('/users/:id', authMiddleware, async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const { username, password, role } = req.body;
+  const userId = req.params.id;
+
+  if (!username) {
+    req.session.error = 'Kullanıcı adı zorunludur.';
+    return res.redirect('/admin/users');
+  }
+
+  // Başka bir kullanıcı bu ismi kullanıyor mu?
+  const { data: existing } = await supabase.from('users').select('id').eq('username', username).neq('id', userId).single();
+  if (existing) {
+    req.session.error = 'Bu kullanıcı adı zaten başka biri tarafından kullanılıyor.';
+    return res.redirect('/admin/users');
+  }
+
+  const updateData = { username, role: role || 'admin' };
+
+  if (password && password.length >= 6) {
+    updateData.password = bcrypt.hashSync(password, 10);
+  }
+
+  await supabase.from('users').update(updateData).eq('id', userId);
+
+  // Oturumdaki kullanıcı adını da güncelle
+  if (userId == req.session.user.id) {
+    req.session.user.username = username;
+    req.session.user.role = role;
+  }
+
+  req.session.success = 'Kullanıcı başarıyla güncellendi.';
+  res.redirect('/admin/users');
+});
+
+router.post('/users/:id/delete', authMiddleware, async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const userId = req.params.id;
+
+  if (userId == req.session.user.id) {
+    req.session.error = 'Kendi hesabınızı silemezsiniz.';
+    return res.redirect('/admin/users');
+  }
+
+  await supabase.from('users').delete().eq('id', userId);
+  req.session.success = 'Kullanıcı başarıyla silindi.';
+  res.redirect('/admin/users');
+});
+
+// === VISITORS ===
+router.get('/visitors', authMiddleware, async (req, res) => {
+  const supabase = req.app.locals.supabase;
+
+  const { count: totalVisitors } = await supabase
+    .from('visitors')
+    .select('id', { count: 'exact', head: true });
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const { count: todayVisitors } = await supabase
+    .from('visitors')
+    .select('id', { count: 'exact', head: true })
+    .gte('created_at', today.toISOString());
+
+  const { data: countryData } = await supabase
+    .from('visitors')
+    .select('country')
+    .not('country', 'eq', 'Yerel');
+  const uniqueCountries = countryData ? [...new Set(countryData.map(c => c.country))].length : 0;
+
+  const { data: visitors } = await supabase
+    .from('visitors')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(100);
+
+  res.render('admin/visitors', { title: 'Ziyaretçi İstatistikleri', visitors: visitors || [], totalVisitors: totalVisitors || 0, todayVisitors: todayVisitors || 0, uniqueCountries, user: req.session.user });
+});
+
 module.exports = router;

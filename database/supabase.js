@@ -62,6 +62,7 @@ async function seedDefaults() {
       { page_slug: 'home', section: 'hero_title', content: 'Güneş Enerjisiyle Geleceğinizi Aydınlatın' },
       { page_slug: 'home', section: 'hero_subtitle', content: 'Profesyonel güneş enerjisi çözümleri, karavan elektrik sistemleri ve teknik servis hizmetleri.' },
       { page_slug: 'home', section: 'hero_cta', content: 'Ücretsiz Keşif İçin Bize Ulaşın' },
+      { page_slug: 'home', section: 'hero_categories', content: 'GÜNEŞ ENERJİSİ · RÜZGAR ENERJİSİ · KARAVAN · EV ELEKTRİĞİ · TAMİR' },
       { page_slug: 'about', section: 'title', content: 'Hakkımızda' },
       { page_slug: 'about', section: 'subtitle', content: 'Güneş enerjisi ve elektrik çözümlerinde güvenilir partneriniz.' },
       { page_slug: 'services', section: 'title', content: 'Hizmetlerimiz' },

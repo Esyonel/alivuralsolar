@@ -39,6 +39,29 @@ app.use((req, res, next) => {
   next();
 });
 
+// Visitor tracking
+const { visitorMiddleware } = require('./middleware/visitor');
+app.use(visitorMiddleware);
+
+// Visitor stats API (footer counter)
+app.get('/api/stats', async (req, res) => {
+  try {
+    const { count: totalVisitors } = await supabase
+      .from('visitors')
+      .select('id', { count: 'exact', head: true });
+
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const { count: onlineVisitors } = await supabase
+      .from('visitors')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', fiveMinAgo);
+
+    res.json({ total: totalVisitors || 0, online: onlineVisitors || 0 });
+  } catch (err) {
+    res.json({ total: 0, online: 0 });
+  }
+});
+
 // Routes
 const pageRoutes = require('./routes/pages');
 const apiRoutes = require('./routes/api');

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Ali Vural Solar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="admin-main" id="adminMain">
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="admin-user"><i class="fas fa-user-circle"></i> <span><%= user.username %></span></div>
+    </div>
+    <div class="admin-content">
+      <% if (typeof success !== 'undefined' && success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <% if (typeof error !== 'undefined' && error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <div class="content-header">
+        <h1>Kullanıcı Yönetimi</h1>
+        <button class="btn btn-primary" onclick="document.getElementById('addUserModal').style.display='flex'"><i class="fas fa-plus"></i> Yeni Kullanıcı</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Kullanıcı Adı</th>
+              <th>Rol</th>
+              <th>Kayıt Tarihi</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(function(u) { %>
+            <tr>
+              <td><%= u.id %></td>
+              <td><i class="fas fa-user"></i> <%= u.username %></td>
+              <td><span class="badge badge-info"><%= u.role %></span></td>
+              <td><%= new Date(u.created_at).toLocaleDateString('tr-TR') %></td>
+              <td class="actions">
+                <button class="btn btn-sm btn-primary" onclick="openEditModal('<%= u.id %>', '<%= u.username %>')"><i class="fas fa-edit"></i> Düzenle</button>
+                <% if (u.id !== currentUserId) { %>
+                <form method="POST" action="/admin/users/<%= u.id %>/delete" style="display:inline;" onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?')">
+                  <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Sil</button>
+                </form>
+                <% } %>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Yeni Kullanıcı Ekle Modal -->
+  <div class="modal" id="addUserModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Yeni Kullanıcı Ekle</h3>
+        <button class="modal-close" onclick="document.getElementById('addUserModal').style.display='none'">&times;</button>
+      </div>
+      <form method="POST" action="/admin/users">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Kullanıcı Adı</label>
+          <input type="text" name="username" required class="form-control" minlength="3">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Şifre</label>
+          <input type="password" name="password" required class="form-control" minlength="6">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-user-tag"></i> Rol</label>
+          <select name="role" class="form-control">
+            <option value="admin">Admin</option>
+            <option value="editor">Editör</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Kaydet</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Düzenle Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Kullanıcı Düzenle</h3>
+        <button class="modal-close" onclick="document.getElementById('editModal').style.display='none'">&times;</button>
+      </div>
+      <form id="editForm" method="POST">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Kullanıcı Adı</label>
+          <input type="text" name="username" id="editUsername" required class="form-control" minlength="3">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Yeni Şifre (boş bırakılırsa değişmez)</label>
+          <input type="password" name="password" class="form-control" minlength="6" placeholder="Değiştirmek için doldurun">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-user-tag"></i> Rol</label>
+          <select name="role" id="editRole" class="form-control">
+            <option value="admin">Admin</option>
+            <option value="editor">Editör</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Güncelle</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+  <script>
+    function openEditModal(id, username) {
+      document.getElementById('editForm').action = '/admin/users/' + id;
+      document.getElementById('editUsername').value = username;
+      document.getElementById('editModal').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
