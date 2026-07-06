@@ -1,126 +1,199 @@
 const express = require('express');
 const router = express.Router();
 
-function getSettings(db) {
-  const rows = db.prepare('SELECT * FROM settings').all();
-  return rows.reduce((acc, row) => { acc[row.key] = row.value; return acc; }, {});
-}
-
 // Ana sayfa
-router.get('/', (req, res) => {
-  const db = req.app.locals.db;
-  const settings = getSettings(db);
-  const featuredProducts = db.prepare(`
-    SELECT p.*, c.name as category_name 
-    FROM products p 
-    LEFT JOIN categories c ON p.category_id = c.id 
-    WHERE p.featured = 1 AND p.status = 1 
-    ORDER BY p.created_at DESC LIMIT 6
-  `).all();
-  const services = db.prepare('SELECT * FROM services ORDER BY sort_order ASC LIMIT 6').all();
-  const galleryItems = db.prepare('SELECT * FROM gallery ORDER BY sort_order ASC LIMIT 6').all();
+router.get('/', async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const getSettings = req.app.locals.getSettings;
+  const settings = await getSettings();
+
+  const { data: featuredProducts } = await supabase
+    .from('products')
+    .select('*, categories(name)')
+    .eq('featured', 1)
+    .eq('status', 1)
+    .order('created_at', { ascending: false })
+    .limit(6);
+
+  const { data: services } = await supabase
+    .from('services')
+    .select('*')
+    .order('sort_order', { ascending: true })
+    .limit(6);
+
+  const { data: galleryItems } = await supabase
+    .from('gallery')
+    .select('*')
+    .order('sort_order', { ascending: true })
+    .limit(6);
+
+  const { data: contents } = await supabase
+    .from('page_contents')
+    .select('*')
+    .eq('page_slug', 'home');
+
   const pageContent = {};
+  if (contents) contents.forEach(c => { pageContent[c.section] = c.content; });
 
-  const contents = db.prepare('SELECT * FROM page_contents WHERE page_slug = ?').all('home');
-  contents.forEach(c => { pageContent[c.section] = c.content; });
+  // Format products to include category_name
+  const formattedProducts = (featuredProducts || []).map(p => ({
+    ...p,
+    category_name: p.categories ? p.categories.name : null
+  }));
 
-  res.render('home', { settings, featuredProducts, services, galleryItems, pageContent });
+  res.render('home', { settings, featuredProducts: formattedProducts, services: services || [], galleryItems: galleryItems || [], pageContent });
 });
 
 // Hakkımızda
-router.get('/hakkimizda', (req, res) => {
-  const db = req.app.locals.db;
-  const settings = getSettings(db);
+router.get('/hakkimizda', async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const getSettings = req.app.locals.getSettings;
+  const settings = await getSettings();
+
+  const { data: contents } = await supabase
+    .from('page_contents')
+    .select('*')
+    .eq('page_slug', 'about');
+
   const pageContent = {};
-  const contents = db.prepare('SELECT * FROM page_contents WHERE page_slug = ?').all('about');
-  contents.forEach(c => { pageContent[c.section] = c.content; });
+  if (contents) contents.forEach(c => { pageContent[c.section] = c.content; });
   res.render('about', { settings, pageContent });
 });
 
 // Hizmetler
-router.get('/hizmetler', (req, res) => {
-  const db = req.app.locals.db;
-  const settings = getSettings(db);
-  const services = db.prepare('SELECT * FROM services ORDER BY sort_order ASC').all();
+router.get('/hizmetler', async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const getSettings = req.app.locals.getSettings;
+  const settings = await getSettings();
+
+  const { data: services } = await supabase
+    .from('services')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  const { data: contents } = await supabase
+    .from('page_contents')
+    .select('*')
+    .eq('page_slug', 'services');
+
   const pageContent = {};
-  const contents = db.prepare('SELECT * FROM page_contents WHERE page_slug = ?').all('services');
-  contents.forEach(c => { pageContent[c.section] = c.content; });
-  res.render('services', { settings, services, pageContent });
+  if (contents) contents.forEach(c => { pageContent[c.section] = c.content; });
+  res.render('services', { settings, services: services || [], pageContent });
 });
 
-// Ürünler ve Fiyatlar
-router.get('/urunler', (req, res) => {
-  const db = req.app.locals.db;
-  const settings = getSettings(db);
-  const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order ASC').all();
+// Ürünler
+router.get('/urunler', async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const getSettings = req.app.locals.getSettings;
+  const settings = await getSettings();
+
+  const { data: categories } = await supabase
+    .from('categories')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
   const categoryId = req.query.kategori;
-  let products;
+  let query = supabase
+    .from('products')
+    .select('*, categories(name)')
+    .eq('status', 1);
+
   if (categoryId) {
-    products = db.prepare(`
-      SELECT p.*, c.name as category_name 
-      FROM products p 
-      LEFT JOIN categories c ON p.category_id = c.id 
-      WHERE p.category_id = ? AND p.status = 1 
-      ORDER BY p.created_at DESC
-    `).all(categoryId);
-  } else {
-    products = db.prepare(`
-      SELECT p.*, c.name as category_name 
-      FROM products p 
-      LEFT JOIN categories c ON p.category_id = c.id 
-      WHERE p.status = 1 
-      ORDER BY p.created_at DESC
-    `).all();
+    query = query.eq('category_id', categoryId);
   }
+
+  const { data: products } = await query.order('created_at', { ascending: false });
+
+  const { data: contents } = await supabase
+    .from('page_contents')
+    .select('*')
+    .eq('page_slug', 'products');
+
   const pageContent = {};
-  const contents = db.prepare('SELECT * FROM page_contents WHERE page_slug = ?').all('products');
-  contents.forEach(c => { pageContent[c.section] = c.content; });
-  res.render('products', { settings, categories, products, selectedCategory: categoryId || null, pageContent });
+  if (contents) contents.forEach(c => { pageContent[c.section] = c.content; });
+
+  const formattedProducts = (products || []).map(p => ({
+    ...p,
+    category_name: p.categories ? p.categories.name : null
+  }));
+
+  res.render('products', { settings, categories: categories || [], products: formattedProducts, selectedCategory: categoryId || null, pageContent });
 });
 
 // Ürün detay
-router.get('/urun/:id', (req, res) => {
-  const db = req.app.locals.db;
-  const settings = getSettings(db);
-  const product = db.prepare(`
-    SELECT p.*, c.name as category_name 
-    FROM products p 
-    LEFT JOIN categories c ON p.category_id = c.id 
-    WHERE p.id = ? AND p.status = 1
-  `).get(req.params.id);
+router.get('/urun/:id', async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const getSettings = req.app.locals.getSettings;
+  const settings = await getSettings();
+
+  const { data: product } = await supabase
+    .from('products')
+    .select('*, categories(name)')
+    .eq('id', req.params.id)
+    .eq('status', 1)
+    .single();
+
   if (!product) return res.status(404).render('404', { title: 'Ürün Bulunamadı', settings });
-  
-  const relatedProducts = db.prepare(`
-    SELECT p.*, c.name as category_name 
-    FROM products p 
-    LEFT JOIN categories c ON p.category_id = c.id 
-    WHERE p.category_id = ? AND p.id != ? AND p.status = 1 
-    ORDER BY RANDOM() LIMIT 3
-  `).all(product.category_id, product.id);
-  
-  res.render('product-detail', { settings, product, relatedProducts });
+
+  const formattedProduct = {
+    ...product,
+    category_name: product.categories ? product.categories.name : null
+  };
+
+  let relatedProducts = [];
+  if (product.category_id) {
+    const { data: related } = await supabase
+      .from('products')
+      .select('*, categories(name)')
+      .eq('category_id', product.category_id)
+      .neq('id', product.id)
+      .eq('status', 1)
+      .limit(3);
+
+    relatedProducts = (related || []).map(p => ({
+      ...p,
+      category_name: p.categories ? p.categories.name : null
+    }));
+  }
+
+  res.render('product-detail', { settings, product: formattedProduct, relatedProducts });
 });
 
 // Galeri
-router.get('/galeri', (req, res) => {
-  const db = req.app.locals.db;
-  const settings = getSettings(db);
-  const galleryItems = db.prepare('SELECT * FROM gallery ORDER BY sort_order ASC').all();
+router.get('/galeri', async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const getSettings = req.app.locals.getSettings;
+  const settings = await getSettings();
+
+  const { data: galleryItems } = await supabase
+    .from('gallery')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  const { data: contents } = await supabase
+    .from('page_contents')
+    .select('*')
+    .eq('page_slug', 'gallery');
+
   const pageContent = {};
-  const contents = db.prepare('SELECT * FROM page_contents WHERE page_slug = ?').all('gallery');
-  contents.forEach(c => { pageContent[c.section] = c.content; });
-  res.render('gallery', { settings, galleryItems, pageContent });
+  if (contents) contents.forEach(c => { pageContent[c.section] = c.content; });
+  res.render('gallery', { settings, galleryItems: galleryItems || [], pageContent });
 });
 
 // İletişim
-router.get('/iletisim', (req, res) => {
-  const db = req.app.locals.db;
-  const settings = getSettings(db);
-  const contactInfo = db.prepare('SELECT * FROM contact_info WHERE is_active = 1').all();
+router.get('/iletisim', async (req, res) => {
+  const supabase = req.app.locals.supabase;
+  const getSettings = req.app.locals.getSettings;
+  const settings = await getSettings();
+
+  const { data: contents } = await supabase
+    .from('page_contents')
+    .select('*')
+    .eq('page_slug', 'contact');
+
   const pageContent = {};
-  const contents = db.prepare('SELECT * FROM page_contents WHERE page_slug = ?').all('contact');
-  contents.forEach(c => { pageContent[c.section] = c.content; });
-  res.render('contact', { settings, contactInfo, pageContent });
+  if (contents) contents.forEach(c => { pageContent[c.section] = c.content; });
+  res.render('contact', { settings, contactInfo: [], pageContent });
 });
 
 module.exports = router;

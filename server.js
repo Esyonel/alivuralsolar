@@ -2,16 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const { initDatabase } = require('./database/init');
+const { supabase, getSettings, seedDefaults } = require('./database/supabase');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize database
-const db = initDatabase();
-
-// Make db available to routes
-app.locals.db = db;
+// Make supabase available to routes
+app.locals.supabase = supabase;
+app.locals.getSettings = getSettings;
 
 // View engine
 app.set('view engine', 'ejs');
@@ -29,7 +27,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'alivuralsolar_secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }
 }));
 
 // Flash messages helper
@@ -51,24 +49,30 @@ app.use('/api', apiRoutes);
 app.use('/admin', adminRoutes);
 
 // 404 handler
-app.use((req, res) => {
-  res.status(404).render('404', {
-    title: 'Sayfa Bulunamadı',
-    settings: db.prepare('SELECT * FROM settings').all().reduce((acc, row) => { acc[row.key] = row.value; return acc; }, {})
-  });
+app.use(async (req, res) => {
+  const settings = await getSettings();
+  res.status(404).render('404', { title: 'Sayfa Bulunamadı', settings });
 });
 
 // Error handler
-app.use((err, req, res, next) => {
+app.use(async (err, req, res, next) => {
   console.error(err.stack);
+  const settings = await getSettings();
   res.status(500).render('error', {
     title: 'Sunucu Hatası',
     error: process.env.NODE_ENV === 'development' ? err : {},
-    settings: db.prepare('SELECT * FROM settings').all().reduce((acc, row) => { acc[row.key] = row.value; return acc; }, {})
+    settings
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Ali Vural Solar sunucusu çalışıyor: http://localhost:${PORT}`);
-  console.log(`Admin panel: http://localhost:${PORT}/admin`);
-});
+// Start server
+async function start() {
+  await seedDefaults();
+  console.log('Supabase veritabanı hazır.');
+  app.listen(PORT, () => {
+    console.log(`Ali Vural Solar sunucusu çalışıyor: http://localhost:${PORT}`);
+    console.log(`Admin panel: http://localhost:${PORT}/admin`);
+  });
+}
+
+start();

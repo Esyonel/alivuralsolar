@@ -2,20 +2,25 @@ const express = require('express');
 const router = express.Router();
 
 // İletişim formu gönderimi
-router.post('/inquiry', (req, res) => {
-  const db = req.app.locals.db;
+router.post('/inquiry', async (req, res) => {
+  const supabase = req.app.locals.supabase;
   const { name, email, phone, subject, message, product_id } = req.body;
-  
+
   if (!name || !message) {
     return res.status(400).json({ success: false, error: 'İsim ve mesaj alanları zorunludur.' });
   }
 
   try {
-    db.prepare(`
-      INSERT INTO inquiries (name, email, phone, subject, message, product_id) 
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(name, email || null, phone || null, subject || null, message, product_id || null);
-    
+    const { error } = await supabase.from('inquiries').insert([{
+      name,
+      email: email || null,
+      phone: phone || null,
+      subject: subject || null,
+      message,
+      product_id: product_id || null
+    }]);
+
+    if (error) throw error;
     res.json({ success: true, message: 'Talebiniz başarıyla alındı. En kısa sürede size dönüş yapacağız.' });
   } catch (err) {
     console.error(err);
@@ -23,24 +28,31 @@ router.post('/inquiry', (req, res) => {
   }
 });
 
-// Bilgi talebi (ürün sayfasından)
-router.post('/info-request', (req, res) => {
-  const db = req.app.locals.db;
+// Bilgi talebi
+router.post('/info-request', async (req, res) => {
+  const supabase = req.app.locals.supabase;
   const { name, phone, message, product_id } = req.body;
-  
+
   if (!name || !phone) {
     return res.status(400).json({ success: false, error: 'İsim ve telefon alanları zorunludur.' });
   }
 
   try {
-    const product = product_id ? db.prepare('SELECT name FROM products WHERE id = ?').get(product_id) : null;
-    const subject = product ? `${product.name} hakkında bilgi talebi` : 'Genel bilgi talebi';
-    
-    db.prepare(`
-      INSERT INTO inquiries (name, phone, subject, message, product_id) 
-      VALUES (?, ?, ?, ?, ?)
-    `).run(name, phone, subject, message || 'Ürün hakkında bilgi talep ediyorum.', product_id || null);
-    
+    let subject = 'Genel bilgi talebi';
+    if (product_id) {
+      const { data: product } = await supabase.from('products').select('name').eq('id', product_id).single();
+      if (product) subject = `${product.name} hakkında bilgi talebi`;
+    }
+
+    const { error } = await supabase.from('inquiries').insert([{
+      name,
+      phone,
+      subject,
+      message: message || 'Ürün hakkında bilgi talep ediyorum.',
+      product_id: product_id || null
+    }]);
+
+    if (error) throw error;
     res.json({ success: true, message: 'Talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.' });
   } catch (err) {
     console.error(err);
