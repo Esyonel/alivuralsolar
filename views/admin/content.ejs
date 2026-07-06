@@ -22,8 +22,11 @@
       <h1>Sayfa İçerik Yönetimi</h1>
 
       <div class="page-tabs">
-        <% pages.forEach(function(p) { %>
-          <a href="/admin/content?page=<%= p %>" class="tab <%= currentPage === p ? 'active' : '' %>"><%= p %></a>
+        <% 
+          var pageNames = { home: 'Ana Sayfa', about: 'Hakkımızda', services: 'Hizmetler', products: 'Ürünler', gallery: 'Galeri', contact: 'İletişim' };
+          pages.forEach(function(p) { 
+        %>
+          <a href="/admin/content?page=<%= p %>" class="tab <%= currentPage === p ? 'active' : '' %>"><%= pageNames[p] || p %></a>
         <% }); %>
       </div>
 

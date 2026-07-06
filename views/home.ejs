@@ -5,7 +5,12 @@
   <div class="container hero-content">
     <div class="hero-text">
       <div class="hero-categories">
-        <span><%= (pageContent.hero_categories || 'GÜNEŞ ENERJİSİ · RÜZGAR ENERJİSİ · KARAVAN · EV ELEKTRİĞİ · TAMİR').split('·').map(s => s.trim()).join('</span> · <span>') %></span>
+        <% 
+          var cats = (pageContent.hero_categories || 'GÜNEŞ ENERJİSİ · RÜZGAR ENERJİSİ · KARAVAN · EV ELEKTRİĞİ · TAMİR').split('·');
+          cats.forEach(function(cat, i) { 
+        %>
+          <span><%= cat.trim() %></span><% if (i < cats.length - 1) { %> · <% } %>
+        <% }); %>
       </div>
       <h1 class="hero-title animate-fade-up"><%= pageContent.hero_title || 'Güneşi enerjiye, enerjiyi hayata dönüştürüyoruz.' %></h1>
       <p class="hero-subtitle animate-fade-up delay-1"><%= pageContent.hero_subtitle || 'Güneş paneli ve rüzgar tribününden elde edilen temiz enerji ile ev, işyeri ve karavanlarınız için kesintisiz güç. Plus, elektrikli ev aletleri tamiri ve jel akü tamiri hizmetleri.' %></p>
