@@ -1,5 +1,5 @@
 /* ========================================
-   Ali Vural Solar - Ana JavaScript
+   Ali Vural Enerji - Ana JavaScript
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function() {

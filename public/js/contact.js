@@ -1,5 +1,5 @@
 /* ========================================
-   Ali Vural Solar - İletişim Sayfası JS
+   Ali Vural Enerji - İletişim Sayfası JS
    ======================================== */
 
 // Contact form is handled in main.js

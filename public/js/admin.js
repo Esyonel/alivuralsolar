@@ -1,5 +1,5 @@
 /* ========================================
-   Ali Vural Solar - Admin Panel JavaScript
+   Ali Vural Enerji - Admin Panel JavaScript
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function() {

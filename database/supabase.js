@@ -19,7 +19,7 @@ async function seedDefaults() {
   if (existing && existing.length > 0) return;
 
   await supabase.from('settings').insert([
-    { key: 'company_name', value: 'Ali Vural Solar' },
+    { key: 'company_name', value: 'Ali Vural Enerji' },
     { key: 'site_name', value: 'alivuralsolar.com' },
     { key: 'phone', value: '+90 541 575 37 09' },
     { key: 'whatsapp', value: '+905415753709' },
@@ -28,7 +28,7 @@ async function seedDefaults() {
     { key: 'map_lat', value: '37.0748' },
     { key: 'map_lng', value: '37.2153' },
     { key: 'working_hours', value: 'Pazartesi - Cumartesi: 08:00 - 18:00' },
-    { key: 'about_text', value: 'Ali Vural Solar olarak güneş enerjisi sistemleri, karavan elektrik sistemleri, ev elektrik çözümleri ve teknik servis hizmetleri alanlarında uzman kadromuzla hizmet vermekteyiz.' }
+    { key: 'about_text', value: 'Ali Vural Enerji olarak güneş enerjisi sistemleri, karavan elektrik sistemleri, ev elektrik çözümleri ve teknik servis hizmetleri alanlarında uzman kadromuzla hizmet vermekteyiz.' }
   ]);
 
   const { data: cats } = await supabase.from('categories').select('id').limit(1);

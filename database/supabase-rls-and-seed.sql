@@ -32,7 +32,7 @@ CREATE POLICY "Full access users" ON users FOR ALL USING (true) WITH CHECK (true
 
 -- Varsayilan veriler (eger hala yoksa)
 INSERT INTO settings (key, value) VALUES
-  ('company_name', 'Ali Vural Solar'),
+  ('company_name', 'Ali Vural Enerji'),
   ('site_name', 'alivuralsolar.com'),
   ('phone', '+90 541 575 37 09'),
   ('whatsapp', '+905415753709'),
@@ -41,7 +41,7 @@ INSERT INTO settings (key, value) VALUES
   ('map_lat', '37.0748'),
   ('map_lng', '37.2153'),
   ('working_hours', 'Pazartesi - Cumartesi: 08:00 - 18:00'),
-  ('about_text', 'Ali Vural Solar olarak güneş enerjisi sistemleri, karavan elektrik sistemleri, ev elektrik çözümleri ve teknik servis hizmetleri alanlarında uzman kadromuzla hizmet vermekteyiz.')
+  ('about_text', 'Ali Vural Enerji olarak güneş enerjisi sistemleri, karavan elektrik sistemleri, ev elektrik çözümleri ve teknik servis hizmetleri alanlarında uzman kadromuzla hizmet vermekteyiz.')
 ON CONFLICT (key) DO NOTHING;
 
 INSERT INTO categories (name, slug, sort_order) VALUES

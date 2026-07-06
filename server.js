@@ -93,7 +93,7 @@ async function start() {
   await seedDefaults();
   console.log('Supabase veritabanı hazır.');
   app.listen(PORT, () => {
-    console.log(`Ali Vural Solar sunucusu çalışıyor: http://localhost:${PORT}`);
+    console.log(`Ali Vural Enerji sunucusu çalışıyor: http://localhost:${PORT}`);
     console.log(`Admin panel: http://localhost:${PORT}/admin`);
   });
 }
